@@ -1,0 +1,27 @@
+✅ What are Design Patterns? Why are they important?
+
+🔹 What are Design Patterns?
+Design patterns are proven, reusable solutions to common problems in software design.
+
+🔹 Why learn them?
+Improve code reusability, readability, and extensibility
+
+Communicate solutions using a shared vocabulary ("Let’s use the Observer Pattern")
+
+Ace system design and low-level design rounds in interviews
+
+🔸 Categories of Design Patterns:
+Creational – Deals with object creation (e.g., Singleton, Factory)
+
+Structural – Deals with object composition (e.g., Adapter, Decorator)
+
+Behavioral – Deals with communication between objects (e.g., Observer, Strategy)
+
+✅ SOLID Principles – Backbone of Design Patterns
+| Principle                 | Meaning                                         | Quick Example                                                |
+| ------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| S – Single Responsibility | A class should have only one reason to change   | Split `UserManager` into `UserAuth`, `UserProfile`           |
+| O – Open/Closed           | Open for extension, closed for modification     | Use inheritance/interfaces instead of modifying base code    |
+| L – Liskov Substitution   | Subtypes must be replaceable                    | `Bird` → `Penguin` shouldn't break `fly()` if it doesn't fly |
+| I – Interface Segregation | Don’t force clients to implement unused methods | Separate large interfaces                                    |
+| D – Dependency Inversion  | Depend on abstractions, not concrete classes    | Use interfaces or abstract classes                           |
