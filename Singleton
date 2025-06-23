@@ -1,0 +1,63 @@
+Singleton Pattern
+🔹 Purpose:
+Ensure a class has only one instance and provide a global access point to it.
+
+💡 Real-World Examples:
+Logger (only one logging instance needed)
+
+Database Connection Manager
+
+Configuration Manager
+
+Printer Spooler
+
+🔸 Basic Implementation (C++ - Not Thread-Safe)
+
+class Singleton {
+private:
+    static Singleton* instance;
+    Singleton() {}  // private constructor
+
+public:
+    static Singleton* getInstance() {
+        if (instance == nullptr) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+
+    void showMessage() {
+        std::cout << "Hello from Singleton!" << std::endl;
+    }
+};
+
+Singleton* Singleton::instance = nullptr;
+🔐 Thread-Safe Singleton in Modern C++ (C++11 onwards)
+
+class Singleton {
+private:
+    Singleton() {}  // private constructor
+
+public:
+    // Deleted to avoid copies
+    Singleton(const Singleton&) = delete;
+    Singleton& operator=(const Singleton&) = delete;
+
+    static Singleton& getInstance() {
+        static Singleton instance;  // thread-safe in C++11 and above
+        return instance;
+    }
+
+    void showMessage() {
+        std::cout << "Thread-safe Singleton!" << std::endl;
+    }
+};
+❗ Common Interview Pitfalls:
+Multiple threads accessing getInstance() – race conditions
+
+Copy constructors breaking the singleton
+
+Global variables vs controlled access
+
+🎯 Interview Question Example:
+“Design a Logger class that ensures only one instance exists and is shared across the system.”
