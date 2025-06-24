@@ -1,4 +1,5 @@
 Singleton Pattern
+
 🔹 Purpose:
 Ensure a class has only one instance and provide a global access point to it.
 
@@ -32,8 +33,8 @@ public:
 };
 
 Singleton* Singleton::instance = nullptr;
-🔐 Thread-Safe Singleton in Modern C++ (C++11 onwards)
 
+🔐 Thread-Safe Singleton in Modern C++ (C++11 onwards)
 class Singleton {
 private:
     Singleton() {}  // private constructor
@@ -52,6 +53,7 @@ public:
         std::cout << "Thread-safe Singleton!" << std::endl;
     }
 };
+
 ❗ Common Interview Pitfalls:
 Multiple threads accessing getInstance() – race conditions
 
@@ -61,3 +63,56 @@ Global variables vs controlled access
 
 🎯 Interview Question Example:
 “Design a Logger class that ensures only one instance exists and is shared across the system.”
+
+
+📡 LTE / Telecom Example: ConfigManager Singleton
+
+Imagine your LTE eNodeB has global system-wide configuration values (bandwidth, carrier frequency, scheduling timers, etc.).
+
+Singleton Usage:
+
+class ConfigManager {
+private:
+    static ConfigManager* instance;
+    ConfigManager() {
+        // Load .cfg file, initialize parameters
+    }
+
+public:
+    static ConfigManager* getInstance() {
+        if (!instance)
+            instance = new ConfigManager();
+        return instance;
+    }
+
+    int getBandwidth() { return bandwidth; }
+    std::string getSchedulerType() { return scheduler; }
+
+private:
+    int bandwidth;
+    std::string scheduler;
+};
+Then in your MAC or PHY code:
+
+int bw = ConfigManager::getInstance()->getBandwidth();
+This ensures:
+
+Only one config object exists
+
+All layers use consistent values
+
+🔥 Interview Tips
+
+✅ When to use Singleton:
+
+Global shared state
+
+Central coordination
+
+Resource that must not be duplicated (like loggers, config)
+
+🚫 When not to use:
+
+If class has to support multiple configurations
+
+When you need testable, decoupled design (Singletons are hard to mock)
