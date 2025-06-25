@@ -64,10 +64,95 @@ Global variables vs controlled access
 🎯 Interview Question Example:
 “Design a Logger class that ensures only one instance exists and is shared across the system.”
 
+Here's a clean and thread-safe design for a Logger Singleton class in C++, which ensures:
+
+✅ Only one instance exists system-wide
+
+✅ Can be called from anywhere in the codebase
+
+✅ Supports basic log() functionality
+
+✅ Is thread-safe using C++11 features (ideal for multi-threaded telecom systems)
+
+✅ Thread-Safe Singleton Logger Class (C++11+)
+#include <iostream>
+#include <fstream>
+#include <mutex>
+#include <string>
+
+class Logger {
+private:
+    static Logger* instance;
+    static std::mutex mutex_;
+
+    std::ofstream logfile;
+
+    // Private constructor to prevent instantiation
+    Logger() {
+        logfile.open("log.txt", std::ios_base::app);  // Append mode
+        if (!logfile.is_open()) {
+            std::cerr << "Failed to open log file.\n";
+        }
+    }
+
+    // Delete copy constructor and assignment
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+
+public:
+    ~Logger() {
+        if (logfile.is_open()) {
+            logfile.close();
+        }
+    }
+
+    // Thread-safe Singleton accessor
+    static Logger* getInstance() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (instance == nullptr) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    // Log a message
+    void log(const std::string& message) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (logfile.is_open()) {
+            logfile << message << std::endl;
+        }
+    }
+};
+
+// Static member initialization
+Logger* Logger::instance = nullptr;
+std::mutex Logger::mutex_;
+
+🧪 Example Usage
+int main() {
+    Logger::getInstance()->log("System started.");
+    Logger::getInstance()->log("Processing UE RNTI 580b...");
+    Logger::getInstance()->log("Radio Link Failure detected.");
+}
+🛠️ Output
+File: log.txt
+System started.
+Processing UE RNTI 580b...
+Radio Link Failure detected.
+
+// Summary //
+| Feature        | Why it matters                                                        |
+| -------------- | --------------------------------------------------------------------- |
+| 🧵 Thread-safe | Multiple threads (e.g., MAC, RRC, RLC) can log concurrently           |
+| 🔁 Singleton   | Avoids multiple log streams interfering                               |
+| 🗂️ File-based | Integrates with external monitoring or log parsing tools              |
+| 📎 Reusable    | Can easily be extended for levels (INFO/WARN/ERROR), timestamps, etc. |
+
+
 
 📡 LTE / Telecom Example: ConfigManager Singleton
 
-Imagine your LTE eNodeB has global system-wide configuration values (bandwidth, carrier frequency, scheduling timers, etc.).
+"Imagine your LTE eNodeB has global system-wide configuration values (bandwidth, carrier frequency, scheduling timers, etc.)."
 
 Singleton Usage:
 
