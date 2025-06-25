@@ -1,0 +1,42 @@
+✅ Steps to Create a Singleton Class
+
+1️⃣ Make Constructor Private
+Prevents others from creating objects with new or directly calling the constructor.
+ Singleton {
+private:
+    Singleton() {}  // 👈 Private constructor
+};
+
+2️⃣ Delete Copy and Assignment
+Prevents duplication of the singleton via copy or assignment.
+Singleton(const Singleton&) = delete;
+Singleton& operator=(const Singleton&) = delete;
+
+3️⃣ Add a Static Instance Pointer
+Holds the one and only instance of the class.
+static Singleton* instance;
+
+4️⃣ Add a Static Getter Function
+Lazily creates the instance and returns it.
+
+static Singleton* getInstance() {
+    if (instance == nullptr) {
+        instance = new Singleton();
+    }
+    return instance;
+}
+
+5️⃣ (Optional) Add Thread Safety
+Use a std::mutex to make sure only one thread can create the instance.
+static std::mutex mutex_;
+std::lock_guard<std::mutex> lock(mutex_);
+
+🔄 Summary Rule Table
+| Step                    | Purpose                     |
+| ----------------------- | --------------------------- |
+| `private` constructor   | Blocks external creation    |
+| `delete` copy/assign    | Prevents copies             |
+| `static Singleton*`     | Stores the instance         |
+| `getInstance()`         | Returns or creates instance |
+| `std::mutex` (optional) | Thread safety               |
+
