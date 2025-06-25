@@ -149,6 +149,96 @@ Radio Link Failure detected.
 | 📎 Reusable    | Can easily be extended for levels (INFO/WARN/ERROR), timestamps, etc. |
 
 
+?? Extend with log lovels ??
+#include <iostream>
+#include <fstream>
+#include <mutex>
+#include <string>
+#include <ctime>
+#include <iomanip>
+
+enum class LogLevel {
+    INFO,
+    WARN,
+    ERROR
+};
+
+class Logger {
+private:
+    static Logger* instance;
+    static std::mutex mutex_;
+    std::ofstream logfile;
+
+    Logger() {
+        logfile.open("log.txt", std::ios_base::app);
+        if (!logfile.is_open()) {
+            std::cerr << "Failed to open log file.\n";
+        }
+    }
+
+    // Delete copy constructor and assignment
+    Logger(const Logger&) = delete;
+    Logger& operator=(const Logger&) = delete;
+
+    std::string currentTimestamp() {
+        std::time_t now = std::time(nullptr);
+        std::tm* t = std::localtime(&now);
+        char buffer[32];
+        std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", t);
+        return std::string(buffer);
+    }
+
+    std::string logLevelToString(LogLevel level) {
+        switch (level) {
+            case LogLevel::INFO:  return "INFO";
+            case LogLevel::WARN:  return "WARN";
+            case LogLevel::ERROR: return "ERROR";
+            default:              return "UNKNOWN";
+        }
+    }
+
+public:
+    ~Logger() {
+        if (logfile.is_open()) {
+            logfile.close();
+        }
+    }
+
+    static Logger* getInstance() {
+        std::lock_guard<std::mutex> lock(mutex_);
+        if (instance == nullptr) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    void log(LogLevel level, const std::string& message) {
+        std::lock_guard<std::mutex> lock(mutex_);
+        std::string timestamp = currentTimestamp();
+        std::string levelStr = logLevelToString(level);
+        std::string fullMessage = "[" + timestamp + "] [" + levelStr + "] " + message;
+
+        // Write to file
+        if (logfile.is_open()) {
+            logfile << fullMessage << std::endl;
+        }
+
+        // Print to console
+        std::cout << fullMessage << std::endl;
+    }
+};
+
+// Static members
+Logger* Logger::instance = nullptr;
+std::mutex Logger::mutex_;
+
+🧪 Usage Example
+
+int main() {
+    Logger::getInstance()->log(LogLevel::INFO,  "System initialized");
+    Logger::getInstance()->log(LogLevel::WARN,  "RNTI 580b dropped uplink");
+    Logger::getInstance()->log(LogLevel::ERROR, "Radio Link Failure detected");
+}
 
 📡 LTE / Telecom Example: ConfigManager Singleton
 
