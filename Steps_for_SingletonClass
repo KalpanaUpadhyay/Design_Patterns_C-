@@ -7,14 +7,32 @@ private:
     Singleton() {}  // 👈 Private constructor
 };
 
+✅ Why?
+Prevents other classes or code from doing Singleton s; or new Singleton();
+Enforces the rule: only one object is allowed.
+The object can only be created from inside the class — specifically from getInstance().
+
+
 2️⃣ Delete Copy and Assignment
 Prevents duplication of the singleton via copy or assignment.
 Singleton(const Singleton&) = delete;
 Singleton& operator=(const Singleton&) = delete;
 
+✅ Why?
+Prevents creating multiple copies of the singleton using:
+Singleton s2 = s1; (copy constructor)
+s2 = s1; (assignment)
+If you don’t delete these, your Singleton isn’t really one instance — it can be cloned.
+
 3️⃣ Add a Static Instance Pointer
 Holds the one and only instance of the class.
 static Singleton* instance;
+
+✅ Why?
+This is where the one and only object lives.
+It's static, so:
+Exists once for the class, not per object.
+Is shared across all usages of the class.
 
 4️⃣ Add a Static Getter Function
 Lazily creates the instance and returns it.
@@ -26,10 +44,23 @@ static Singleton* getInstance() {
     return instance;
 }
 
+✅ Why?
+This function gives controlled access to the Singleton object.
+If the instance is not created yet → it creates one.
+If already created → it returns the existing one.
+Central place to manage object lifecycle.
+
 5️⃣ (Optional) Add Thread Safety
 Use a std::mutex to make sure only one thread can create the instance.
 static std::mutex mutex_;
 std::lock_guard<std::mutex> lock(mutex_);
+
+✅ Why?
+In multithreaded code, two threads might both see instance == nullptr and create two objects.
+A mutex ensures that only one thread creates the Singleton.
+lock_guard auto-locks and unlocks, so you avoid deadlocks.
+
+
 
 🔄 Summary Rule Table
 | Step                    | Purpose                     |
