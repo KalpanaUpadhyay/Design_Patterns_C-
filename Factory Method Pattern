@@ -1,0 +1,27 @@
+🧱 Next Pattern: Factory Method Pattern
+✅ Why it’s important:
+Real-world use: Creating objects without hardcoding class names
+
+Common in frameworks, SDKs, plugin systems, etc.
+
+Highly asked in C++ system design interviews (including Adobe, Microsoft)
+
+🔍 What You’ll Learn:
+🔧 Concept:
+Define an interface for creating an object, but let subclasses decide which class to instantiate.
+
+🧠 Key Learning:
+Avoids new scattered across code
+
+Promotes loose coupling
+
+Cleanly supports extension without changing existing code
+
+👩‍💻 Example Use Case:
+Imagine you want to create different types of Transport objects:
+
+Car, Bike, Bus
+
+Using a Factory, you can do:
+Transport* t = TransportFactory::create("car");
+And it will return a Car object — no if-else, no new Car() all over your code.
