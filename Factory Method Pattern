@@ -25,3 +25,92 @@ Car, Bike, Bus
 Using a Factory, you can do:
 Transport* t = TransportFactory::create("car");
 And it will return a Car object — no if-else, no new Car() all over your code.
+
+✅ Real-Life Analogy
+Imagine an app where users select a vehicle type: "car", "bike", or "bus".
+Instead of doing:
+if (type == "car") transport = new Car();
+else if (type == "bike") transport = new Bike();
+You just do:
+Transport* t = TransportFactory::create("car");
+This gives you:
+
+Cleaner code
+
+Easier maintenance
+
+Flexibility to add more types (Truck, Scooter, etc.) without changing core logic
+
+🧱 Code Walkthrough (C++)
+🔹 Step 1: Define a Common Base Class
+class Transport {
+public:
+    virtual void deliver() = 0;
+    virtual ~Transport() = default;
+};
+🔹 Step 2: Create Derived Classes
+class Car : public Transport {
+public:
+    void deliver() override {
+        std::cout << "Delivering by Car 🚗\n";
+    }
+};
+
+class Bike : public Transport {
+public:
+    void deliver() override {
+        std::cout << "Delivering by Bike 🏍️\n";
+    }
+};
+
+class Bus : public Transport {
+public:
+    void deliver() override {
+        std::cout << "Delivering by Bus 🚌\n";
+    }
+};
+🔹 Step 3: Factory Class
+class TransportFactory {
+public:
+    static Transport* create(const std::string& type) {
+        if (type == "car")  return new Car();
+        if (type == "bike") return new Bike();
+        if (type == "bus")  return new Bus();
+        return nullptr;
+    }
+};
+🧪 Usage in main()
+int main() {
+    std::string input;
+    std::cout << "Enter transport type (car/bike/bus): ";
+    std::cin >> input;
+
+    Transport* transport = TransportFactory::create(input);
+    if (transport) {
+        transport->deliver();
+        delete transport;
+    } else {
+        std::cout << "Invalid transport type\n";
+    }
+
+    return 0;
+}
+
+✅ Benefits
+| 🔍 Feature                 | 👍 Benefit                   |
+| -------------------------- | ---------------------------- |
+| Centralized creation logic | Cleaner code                 |
+| Avoids `new` everywhere    | Easier to maintain           |
+| Easily extendable          | Add `Truck`, `Scooter`, etc. |
+
+💬 Interview Tips
+Common question: “How would you avoid tight coupling when creating objects?”
+
+Use Factory Pattern when:
+
+You need many subclasses of one base type
+
+Creation logic may change
+
+You want to decouple object creation from usage
+
