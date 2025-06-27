@@ -1,0 +1,117 @@
+Observer Pattern
+🧠 1. Theory (15 min)
+🔷 Intent:
+Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified and updated automatically.
+
+🏛️ 2. Use Cases
+UI frameworks (like buttons and listeners)
+
+Event handlers in games, systems, or messaging
+
+Notification systems (e.g., when stock price changes, notify all observers)
+
+📌 3. Structure Overview
+
+
++---------------+         +------------------+
+|  Subject      |<------->|   Observer       |
++---------------+         +------------------+
+| +attach()     |         | +update()        |
+| +detach()     |         +------------------+
+| +notify()     |
++---------------+
+        ▲
+        |
+        |
++-----------------+
+| ConcreteSubject |
++-----------------+
+| +state          |
++-----------------+
+💻 4. Code in C++ (15 min)
+
+#include <iostream>
+#include <vector>
+#include <memory>
+
+class Observer {
+public:
+    virtual void update(int temperature) = 0;
+    virtual ~Observer() {}
+};
+
+class Subject {
+public:
+    void attach(std::shared_ptr<Observer> obs) {
+        observers.push_back(obs);
+    }
+
+    void notify(int temp) {
+        for (auto& obs : observers) {
+            obs->update(temp);
+        }
+    }
+
+private:
+    std::vector<std::shared_ptr<Observer>> observers;
+};
+
+// Concrete Observer
+class MobileApp : public Observer {
+public:
+    void update(int temperature) override {
+        std::cout << "[MobileApp] Temperature updated: " << temperature << "°C\n";
+    }
+};
+
+class DisplayBoard : public Observer {
+public:
+    void update(int temperature) override {
+        std::cout << "[DisplayBoard] Current Temp: " << temperature << "°C\n";
+    }
+};
+
+// Concrete Subject
+class WeatherStation : public Subject {
+public:
+    void setTemperature(int temp) {
+        temperature = temp;
+        notify(temperature);
+    }
+
+private:
+    int temperature = 0;
+};
+
+int main() {
+    auto station = std::make_shared<WeatherStation>();
+
+    auto mobile = std::make_shared<MobileApp>();
+    auto display = std::make_shared<DisplayBoard>();
+
+    station->attach(mobile);
+    station->attach(display);
+
+    station->setTemperature(25);
+    station->setTemperature(30);
+
+    return 0;
+}
+🎯 5. Interview Key Points (5 min)
+Observer pattern = loose coupling between subject and observers.
+
+Use when multiple components must reflect changes in a shared state.
+
+Don't confuse with Pub/Sub:
+
+Observer is direct, tightly scoped.
+
+Pub/Sub uses event queues/brokers, often async.
+
+🧪 6. Mini Task (Optional, 10 min)
+Make a Stock Market Tracker:
+
+Stock (subject): has a price.
+
+Investor (observer): logs updates when stock price changes.
+
