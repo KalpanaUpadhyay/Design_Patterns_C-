@@ -1,0 +1,90 @@
+🔷 Strategy Design Pattern
+✅ Definition:
+The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. It lets the algorithm vary independently from clients that use it.
+
+✅ Real-Life Analogy:
+Imagine you are booking a ride in an app. You can choose between:
+
+Auto
+Bike
+Car
+
+Each of these has a different pricing algorithm and speed. The app (context) lets you choose the strategy (mode of transport) at runtime.
+
+✅ C++ Example: Ride Booking System
+
+#include <iostream>
+#include <memory>
+using namespace std;
+
+// Strategy Interface
+class TravelStrategy {
+public:
+    virtual void travel() = 0;
+    virtual ~TravelStrategy() {}
+};
+
+// Concrete Strategy 1
+class Bike : public TravelStrategy {
+public:
+    void travel() override {
+        cout << "Traveling by Bike. Cheap but slow.\n";
+    }
+};
+
+// Concrete Strategy 2
+class Car : public TravelStrategy {
+public:
+    void travel() override {
+        cout << "Traveling by Car. Comfortable and fast.\n";
+    }
+};
+
+// Concrete Strategy 3
+class Auto : public TravelStrategy {
+public:
+    void travel() override {
+        cout << "Traveling by Auto. Moderate speed and cost.\n";
+    }
+};
+
+// Context
+class TravelContext {
+private:
+    shared_ptr<TravelStrategy> strategy;
+
+public:
+    void setStrategy(shared_ptr<TravelStrategy> s) {
+        strategy = s;
+    }
+
+    void bookTravel() {
+        if (strategy)
+            strategy->travel();
+        else
+            cout << "No travel strategy selected.\n";
+    }
+};
+
+int main() {
+    TravelContext ctx;
+
+    ctx.setStrategy(make_shared<Bike>());
+    ctx.bookTravel();
+
+    ctx.setStrategy(make_shared<Car>());
+    ctx.bookTravel();
+
+    ctx.setStrategy(make_shared<Auto>());
+    ctx.bookTravel();
+
+    return 0;
+}
+
+✅ Key Points:
+TravelStrategy is the strategy interface.
+
+Bike, Car, and Auto are concrete strategies.
+
+TravelContext is the client that uses a strategy.
+
