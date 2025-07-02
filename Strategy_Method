@@ -88,3 +88,123 @@ Bike, Car, and Auto are concrete strategies.
 
 TravelContext is the client that uses a strategy.
 
+
+🎯 1. UML Diagram for Strategy Pattern
+           +--------------------+
+           |  TravelStrategy    |  <--- Interface
+           +--------------------+
+           | +travel()          |
+           +--------------------+
+                  ▲
+   ┌──────────────┼────────────────┐
+   │              │                │
++--------+    +--------+       +--------+
+|  Bike  |    |  Car   |       |  Auto  |   <-- Concrete strategies
++--------+    +--------+       +--------+
+|travel()|    |travel()|       |travel()|
+
+                  |
+                  ▼
+        +-------------------+
+        |  TravelContext    |  <-- Context class
+        +-------------------+
+        | - strategy        |
+        +-------------------+
+        | +setStrategy()    |
+        | +bookTravel()     |
+        +-------------------+
+
+
+🧠 2. Interview Practice Question
+Question: You’re designing a payment system that supports different modes like Credit Card, UPI, and PayPal. At runtime, the user should be able to choose how to pay.
+
+Design a solution using the Strategy Pattern.
+
+Solution: 
+You need to design a payment system where a user can pay using:
+
+Credit Card
+UPI
+PayPal
+
+The mode should be selectable at runtime using Strategy Pattern.
+#include <iostream>
+#include <memory>
+using namespace std;
+
+// Strategy Interface
+class PaymentStrategy {
+public:
+    virtual void pay(int amount) = 0;
+    virtual ~PaymentStrategy() {}
+};
+
+// Concrete Strategy: Credit Card
+class CreditCardPayment : public PaymentStrategy {
+public:
+    void pay(int amount) override {
+        cout << "Paid ₹" << amount << " using Credit Card.\n";
+    }
+};
+
+// Concrete Strategy: UPI
+class UPIPayment : public PaymentStrategy {
+public:
+    void pay(int amount) override {
+        cout << "Paid ₹" << amount << " using UPI.\n";
+    }
+};
+
+// Concrete Strategy: PayPal
+class PayPalPayment : public PaymentStrategy {
+public:
+    void pay(int amount) override {
+        cout << "Paid ₹" << amount << " using PayPal.\n";
+    }
+};
+
+// Context class
+class PaymentContext {
+private:
+    shared_ptr<PaymentStrategy> strategy;
+
+public:
+    void setStrategy(shared_ptr<PaymentStrategy> s) {
+        strategy = s;
+    }
+
+    void makePayment(int amount) {
+        if (strategy)
+            strategy->pay(amount);
+        else
+            cout << "No payment strategy selected!\n";
+    }
+};
+
+// Main function to simulate the flow
+int main() {
+    PaymentContext context;
+
+    context.setStrategy(make_shared<CreditCardPayment>());
+    context.makePayment(1000);
+
+    context.setStrategy(make_shared<UPIPayment>());
+    context.makePayment(500);
+
+    context.setStrategy(make_shared<PayPalPayment>());
+    context.makePayment(750);
+
+    return 0;
+}
+
+
+✅ Output:
+Paid ₹1000 using Credit Card.
+Paid ₹500 using UPI.
+Paid ₹750 using PayPal.
+
+🧠 Key Interview Talking Points:
+You used composition over inheritance by injecting the strategy.
+You respected the Open/Closed Principle (easy to add more payment methods without modifying existing code).
+You demonstrated runtime flexibility in choosing behavior.
+
